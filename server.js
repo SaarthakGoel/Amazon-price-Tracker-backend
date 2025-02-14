@@ -21,13 +21,9 @@ app.get("/search", async (req, res) => {
 
   try {
     const browser = await puppeteer.launch({
-      headless: "new", // Ensures Puppeteer runs in headless mode
-      args: [
-        "--no-sandbox", 
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+      executablePath: "/opt/render/.cache/puppeteer/chrome/linux-133.0.6943.98/chrome-linux64/chrome",
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
 
