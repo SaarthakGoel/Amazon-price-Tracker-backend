@@ -4,8 +4,8 @@ const cors = require("cors");
 const puppeteer = require("puppeteer");
 const {trackProduct, getPrice} = require("./priceTracker/priceTraker");
 const { default: mongoose } = require("mongoose");
-const TrackingProducts = require("../database/TrackingProducts");
 const sendEmail = require("./sendEmail");
+const TrackingProducts = require("./database/TrackingProducts");
 
 const app = express();
 const PORT = process.env.PORT || 3500;
