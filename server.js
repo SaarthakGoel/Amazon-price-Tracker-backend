@@ -2,8 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const puppeteer = require("puppeteer");
-const {trackProduct} = require("./priceTracker/priceTraker");
+const {trackProduct, getPrice} = require("./priceTracker/priceTraker");
 const { default: mongoose } = require("mongoose");
+const TrackingProducts = require("../database/TrackingProducts");
+const sendEmail = require("./sendEmail");
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -98,6 +100,27 @@ app.post("/track" , (req,res) => {
   trackProduct(name , price , link , email);
   res.json({ message: "Tracking started!", name});
 })
+
+app.get("/check-prices" , async (req , res) => {
+  console.log("Checking price updates...")
+  const productsDB = await TrackingProducts.find();
+  console.log(productsDB);
+
+  productsDB?.length > 0 && productsDB.map(async (product) => {
+    const { name, price, link, affiliateLink, email } = product;
+    const currentPrice = await getPrice(link);
+
+    console.log(`Checking ${email}'s product: ${currentPrice}`);
+
+    if (Number(currentPrice.replace(",", "")) < Number(price.replace(",", ""))) {
+      console.log(`Price dropped for ${email}`);
+
+      await sendEmail(email, name, affiliateLink, currentPrice);
+    };
+
+    res.json({success : true , message : "Price check completed"});
+  })
+});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
