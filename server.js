@@ -21,14 +21,13 @@ app.get("/search", async (req, res) => {
 
   try {
     const browser = await puppeteer.launch({
-      executablePath: '/usr/bin/google-chrome',
-      headless: true,
+      headless: "new", // Ensures Puppeteer runs in headless mode
       args: [
-        "--no-sandbox",
+        "--no-sandbox", 
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu"
-      ]
+        "--disable-gpu",
+      ],
     });
     const page = await browser.newPage();
 
