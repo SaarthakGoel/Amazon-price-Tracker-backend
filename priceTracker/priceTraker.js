@@ -3,6 +3,7 @@ const cron = require('node-cron');
 const axios = require("axios");
 const TrackingProducts = require("../database/TrackingProducts");
 const sendEmail = require("./sendEmail");
+const { application } = require("express");
 
 const getPrice = async (url) => {
   try {
@@ -19,10 +20,21 @@ const getPrice = async (url) => {
 };
 
 const trackProduct = async (name, price, link, email) => {
+
+  const match = link.match(/\/dp\/(B[A-Z0-9]+)/);
+  if (!match) return "Invalid Amazon URL";
+
+  const id = process.env.AMAZONTRACKINGID;
+
+  const productId = match[1];
+  const affiliateLink = `https://www.amazon.in/dp/${productId}?tag=${id}`;
+
+
   const Product = {
     name: name,
     price: price,
     link: link,
+    affiliateLink: affiliateLink,
     email: email
   }
 
@@ -33,7 +45,7 @@ const trackProduct = async (name, price, link, email) => {
   } else {
     console.log("Error in creating document");
   }
-  test();
+  //test();
 }
 
 async function test() {
@@ -41,41 +53,41 @@ async function test() {
   const productsDB = await TrackingProducts.find();
   console.log(productsDB);
 
-  productsDB.map(async(product) => {
-    const {name , price , link , email} = product;
-    const currentPrice = '1'
+  productsDB.map(async (product) => {
+
+    const { name, price, link, affiliateLink, email } = product;
+    const currentPrice = 1;
 
     console.log(`Checking ${email}'s product: ${currentPrice}`);
 
-    if (Number(currentPrice.replace(",", "")) < Number(price.replace(",", ""))) {
+    if (0 < Number(price.replace(",", ""))) {
       console.log(`Price dropped for ${email}`);
-      await sendEmail(email , name , link , currentPrice);
-    }else{
-      console.log("price is same")
-    }
+
+      await sendEmail(email, name, affiliateLink, currentPrice);
+    };
   });
 }
 
-cron.schedule("0 */6 * * *", async () => {
+app.get("/check-prices" , async (req , res) => {
   console.log("Checking price updates...")
   const productsDB = await TrackingProducts.find();
   console.log(productsDB);
 
-  for (let product in productsDB) {
-
-    const { name, price, url: link, email } = product;
-    const currentPrice = await getPrice(url);
+  productsDB?.length > 0 && productsDB.map(async (product) => {
+    const { name, price, link, affiliateLink, email } = product;
+    const currentPrice = await getPrice(link);
 
     console.log(`Checking ${email}'s product: ${currentPrice}`);
 
     if (Number(currentPrice.replace(",", "")) < Number(price.replace(",", ""))) {
       console.log(`Price dropped for ${email}`);
 
-      await sendEmail(email , name , link , currentPrice);
+      await sendEmail(email, name, affiliateLink, currentPrice);
     };
-  }
-}
-);
+
+    res.json({success : true , message : "Price check completed"});
+  })
+})
 
 
 module.exports = { trackProduct };

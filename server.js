@@ -18,7 +18,6 @@ app.get("/search", async (req, res) => {
   console.log("Query:", query);
 
   try {
-    /*
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
@@ -38,7 +37,7 @@ app.get("/search", async (req, res) => {
 
     const products = await page.evaluate(() => {
       return [...document.querySelectorAll(".s-card-container")]
-        .slice(2,7)
+        .slice(2)
         .map((el) => {
           return {
             name: el.querySelector("h2 span")?.innerText || "No Name",
@@ -50,7 +49,7 @@ app.get("/search", async (req, res) => {
     });
 
     await browser.close();
-*/
+    /*
 
     res.json({ products : [{
       name: "Dell 15 Thin & Light Laptop, Intel Core i5-1235U Processor/16GB DDR4 + 512GB SSD/Intel UHD Graphics/15.6\" (39.62cm) FHD Display/Win 11 + MSO'21/15 Month McAfee/Carbon Black/Spill Resistant KB/1.69kg",
@@ -82,8 +81,8 @@ app.get("/search", async (req, res) => {
       image: "https://m.media-amazon.com/images/I/71jG+e7roXL._AC_UY218_.jpg",
       link: "https://www.amazon.in/Apple-MacBook-Chip-13-inch-256GB/dp/B08N5W4NNB/ref=sr_1_5?dib=eyJ2IjoiMSJ9.RXkIJXGcyrRHMC07itcaEFD84cVNlAtA9l7X5VEk77I6YPoP2KjJ8FaWepy_0RSCbD33bNaMF0E6OImLqOk5lJKr_wEo9NDsIbAlXo_UweNHtJ17zzYCdl7UhmYM1GFWTUXTh1vXvBksnF5Zey0HXOcoua3Au0bdDJQOLgiOBZ4CTTyEWutSZlHgotp1vBQo43PVlubvSyhkRV9xjVC9Bvu8CBrdeozREL_F3kzITFA.yVHyny14k8jASbdpOTKF-o0dTZxy0S_uzR7-85C7bi4&dib_tag=se&keywords=laptop&qid=1739281010&sr=8-5"
     }] });
-     
-    //res.json({products : products})
+     */
+    res.json({products : products})
   } catch (error) {
     console.error("Error scraping Amazon:", error);
     res.status(500).json({ error: "Failed to fetch products" });

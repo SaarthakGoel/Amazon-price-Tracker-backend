@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-const sendEmail = async (to , name , link , currentPrice) => {
+const sendEmail = async (to , name , affiliateLink ,currentPrice) => {
   try{
     const mailOptions = {
       from : process.env.EMAIL,
@@ -17,7 +17,7 @@ const sendEmail = async (to , name , link , currentPrice) => {
       html: `
         <h2>Good News! The price for ${name} has dropped.</h2>
         <p><strong>New Price:</strong> ₹${currentPrice}</p>
-        <p>Check it out here: <a href="${link}" target="_blank">${name}</a></p>
+        <p>Check it out here: <a href="${affiliateLink}" target="_blank">Click Here</a></p>
       `,
     };
 
