@@ -28,12 +28,14 @@ app.get("/search", async (req, res) => {
       const page = await browser.newPage();
 
     await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
     );
 
     await page.goto(`https://www.amazon.in/s?k=${encodeURIComponent(query)}`, {
       waitUntil: "domcontentloaded",
     });
+
+    console.log(await page.title());
 
     await page.waitForSelector(".s-card-container");
     await page.waitForSelector(".s-image", { visible: true });
