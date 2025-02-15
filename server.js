@@ -110,7 +110,6 @@ app.post("/track" , (req,res) => {
 app.get("/check-prices" , async (req , res) => {
   console.log("Checking price updates...")
   const productsDB = await TrackingProducts.find();
-  console.log(productsDB);
 
   productsDB?.length > 0 && productsDB.map(async (product) => {
     const { name, price, link, affiliateLink, email } = product;
@@ -127,6 +126,11 @@ app.get("/check-prices" , async (req , res) => {
     res.json({success : true , message : "Price check completed"});
   })
 });
+
+app.get("/revive" , (req , res) => {
+  console.log("I am Alive");
+  res.sendStatus(200);
+})
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
